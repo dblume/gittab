@@ -1,0 +1,107 @@
+*gittab.txt*  Plugin that provides simple Git functions in Vim
+
+                        _______ __     ______      __
+                       / ____(_) /_   /_  __/___ _/ /_
+                      / / __/ / __/    / / / __ `/ __ \
+                     / /_/ / / /_     / / / /_/ / /_/ /
+                     \____/_/\__/    /_/  \__,_/_.___/
+
+==============================================================================
+Gittab                                                                |gittab|
+Introduction ........................................... |gittab-introduction|
+Commands ................................................... |gittab-commands|
+  :Blame ............................................................ |:Blame|
+  :Log ................................................................ |:Log|
+  :Show .............................................................. |:Show|
+  :ShowFile ...................................................... |:ShowFile|
+  :Diff .............................................................. :|Diff|
+
+
+==============================================================================
+Introduction                                      *gittab* *gittab-introduction*
+
+These are handy context-sensitive Git commands in Vim that load the results in
+a new tab. The commands automatically infer what you want from the current
+filename and whether there's a commit hash under the cursor.
+
+These commands are for investigating the history of files. The supported
+commands are:
+
+  :Blame
+  :Log
+  :Show and :ShowFile
+  :Diff
+
+When you're browsing a file in a Git repository, these commands provide a very
+simple and convenient flow for digging into their history.
+
+All you have to know is Blame, Log, Show, and Diff.
+
+==============================================================================
+The Commands                                                 *gittab-commands*
+
+:Blame                                                                *:Blame*
+------
+
+When you're on a regular file or a `:ShowFile` buffer, opens up a "git blame"
+buffer in a new tab for the file at that commit, and positions the
+cursor at the same relative spot.
+
+Example, run Blame on a `:ShowFile` buffer named "git show 1234abcd:README.md",
+and you get a `:Blame` buffer named "git blame 1234abcd -- README.md".
+
+:Log {args}                                                             *:Log*
+-----------
+
+When you're on a regular file or a `:ShowFile` buffer, opens up a git log
+buffer in a new tab. By default, runs log as:
+
+    git log --no-color --graph --date=short --pretty="format:%h %ad %s %an %d"
+
+And you can pass in additional Git arguments like --all.
+
+    :Log --all
+
+The reason Log defaults to one-line logs is because `:Show` and `:Diff` are so
+easy to use to dive in deeper to the individual commits.
+
+Handy arguments are --all, --merges, --date-order, --first-parent, and
+--ancestry-path.
+                              
+:Show                                                                 *:Show*
+-----
+
+These require the cursor to be positioned on a hash, so you'd most likely be
+in a `:Log` or `:Blame` buffer when you want to use these commands.
+
+When you're on a `:Blame` buffer, a `:Log` buffer, `:Show` opens a
+buffer in a new tab that shows the full commit message for the hash under the
+cursor.
+
+:ShowFile                                                         *:ShowFile*
+---------
+
+`:ShowFile` opens a buffer in a new tab that shows the contents of the file
+at the hash under the cursor.
+
+Ex., If the cursor is on "1234abcd" on `:Blame` buffer "git blame -- README.md"
+then:
+
+| Command   | Resultant Buffer               |
+| ---       | ---                            |
+| :Show     | git show 1234abcd -- README.md |
+| :ShowFile | git show 1234abcd:README.md    |
+
+:Diff                                                                 *:Diff*
+-----
+
+If you're on a regular file that's different from HEAD, `:Diff` will perform a
+`git diff` on the file from HEAD. If it's the same as HEAD, then `:Diff` will
+perform a `git diff` against that file's previous commit.
+
+If the cursor is on a commit hash (as available on :Blame, :Log, and :Show
+buffers), then `:Diff` will perform a diff against the previous commit to that
+one.
+
+==============================================================================
+vim:tw=78:sw=4:ts=8:ft=help:norl:
