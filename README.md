@@ -33,6 +33,12 @@ simple and convenient flow for digging into their history.
 
 All you have to know is Blame, Log, Show, and Diff.
 
+The following image is a bit misleading and incomplete, but roughly shows that
+with the above four commands, one can navigate various views of a file and its
+commit history.
+
+![gittab.png](https://dblume.github.io/images/gittab.png)
+
 #### :Blame
 
 When you're on a regular file or a `:ShowFile` buffer, opens up a `git blame` 
@@ -88,6 +94,9 @@ perform a `git diff` against that file's previous commit.
 If the cursor is on a commit hash (as available on :Blame, :Log, and :Show 
 buffers), then `:Diff` will perform a diff against the previous commit to that
 one.
+
+If the active window is of a `:Diff` buffer, then `:Diff` will perform a
+`git diff` of that buffer with that revision's parent.
 
 ## Is it any good?
 
