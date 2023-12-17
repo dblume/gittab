@@ -27,6 +27,22 @@ Install into Vim's built-in package support:
     git clone --filter=blob:none -b main --single-branch https://github.com/dblume/gittab
     vim -u NONE -c "helptags gittab/doc" -c q
 
+
+## Common Use Example
+
+Say you're on "index.html", and you need to know why a section looks the way
+it does. Run `:Blame` to see a list of the commits that _affect only that file_.
+The Blame buffer opens at the same position you were at so you don't lose any
+context.
+
+If you see a commit of interest, move the cursor over it, and type  `:Diff` to
+see what changes were made by that commit, or `:Show` to see the full commit
+description.
+
+Then you can keep exploring, and each command infers what you want by which
+type of buffer you're in or what commit your cursor is on.
+
+
 ## The Commands
 
 When you're browsing a file in a Git repository, these commands provide a very
@@ -39,21 +55,6 @@ four commands, one can easily and quickly navigate various views of a file and
 its commit history.
 
 ![gittab.png](https://dblume.github.io/images/gittab.png)
-
-## Common Example
-
-Say you're on "index.html", and you need to know why a section looks the way
-it does. Run `:Blame` to see a list of the commits that _affect only that file_.
-The Blame buffer opens at the same position you were at so you don't lose any
-context.
-
-If you see a commit of interest, move the cursor over it, and type  `:Diff` to
-see what changes were made by that commit, or `:Show` to see the full commit
-description.
-
-Then you can keep exploring, and each command infers what you want by which
-type of buffer you're in.
-
 
 ### :Blame
 
