@@ -31,9 +31,11 @@ Install into Vim's built-in package support:
 ## Common Use Example
 
 Say you're on "index.html", and you need to know why a section looks the way
-it does. Run `:Blame` to see a list of the commits that _affect only that file_.
-The Blame buffer opens at the same position you were at so you don't lose any
-context.
+it does. Run `:Blame` to see a buffer of "git blame" open at the same line
+where you are so you don't lose any context.
+
+Or run `:Log` to see a list of only the commits that _affect that file_. This
+is nice in a repo of thousands of commits, but only dozens are to this file.
 
 If you see a commit of interest, move the cursor over it, and type  `:Diff` to
 see what changes were made by that commit, or `:Show` to see the full commit
@@ -59,8 +61,8 @@ its commit history.
 ### :Blame
 
 When you're on a regular file or a `:ShowFile` buffer, opens up a `git blame` 
-buffer in a new tab that _affect only the file at that commit_, and positions
-the cursor at the same relative spot in the Blame buffer.
+buffer in a new tab and positions the cursor at the same relative spot in the
+Blame buffer.
 
 Example, run Blame on a `:ShowFile` buffer named "git show 1234abcd:README.md",
 and you get a `:Blame` buffer named "git blame 1234abcd -- README.md".
