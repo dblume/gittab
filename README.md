@@ -125,4 +125,4 @@ The diagram was made with [Excalidraw](https://excalidraw.com/).
 
 ## Licence
 
-This software uses the [MIT License](https://raw.githubusercontent.com/dblume/gittab/main/LICENSE.txt)
+This software uses the [MIT License](https://raw.githubusercontent.com/dblume/gittab/main/LICENSE)
