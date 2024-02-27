@@ -24,15 +24,20 @@ function! s:ShowBufInNewSplit(bufname)
    return 0
 endfunction
 
-function! s:GitBlame()
+function! s:GitBlame(...)
     let l:hash = expand('<cword>')
     let l:currentView = winsaveview()
+    let l:args = a:1
+    if strlen(l:args)
+        " Add a space to the end
+        let l:args = l:args . " "
+    endif
     " If in a Blame window already, do blame for some prior commit
     if l:hash =~ '^[0-9a-f]\{7,40}$' && stridx(expand('%'), ' -- ') != -1
         let l:fname = split(expand('%'), ' -- ')[-1]
-        let l:bufname = 'git blame ' . l:hash . '^ -- ' . l:fname
+        let l:bufname = 'git blame ' . l:args . l:hash . '^ -- ' . l:fname
         if !s:ShowBufInNewTab(l:bufname)
-            exec 'tabnew | r! git blame ' . l:hash . '^ -- ' . shellescape(l:fname)
+            exec 'tabnew | r! git blame ' . l:args . l:hash . '^ -- ' . shellescape(l:fname)
             exec 'silent :file ' . fnameescape(l:bufname)
         endif
     else
@@ -45,15 +50,15 @@ function! s:GitBlame()
             let l:hash = split(l:fname_parts[0], ' ')[-1]
         endif
         if strlen(l:hash)
-            let l:bufname = 'git blame ' . l:hash . ' -- ' . l:fname
+            let l:bufname = 'git blame ' . l:args . l:hash . ' -- ' . l:fname
             if !s:ShowBufInNewTab(l:bufname)
-                exec 'tabnew | r! git blame ' . l:hash . ' -- ' . shellescape(l:fname)
+                exec 'tabnew | r! git blame ' . l:args . l:hash . ' -- ' . shellescape(l:fname)
                 exec 'silent :file ' . fnameescape(l:bufname)
             endif
         else
-            let l:bufname = 'git blame -- ' . l:fname
+            let l:bufname = 'git blame ' . l:args . '-- ' . l:fname
             if !s:ShowBufInNewTab(l:bufname)
-                exec 'tabnew | r! git blame -- ' . shellescape(l:fname)
+                exec 'tabnew | r! git blame ' . l:args . '-- ' . shellescape(l:fname)
                 exec 'silent :file ' . fnameescape(l:bufname)
             endif
         endif
@@ -62,30 +67,35 @@ function! s:GitBlame()
     call winrestview(l:currentView)
     setl buftype=nofile
 endfunction
-command Blame :call s:GitBlame()
+command -nargs=* Blame :call s:GitBlame(<q-args>)
 
-function! s:GitShow(commit_or_file)
+function! s:GitShow(commit_or_file, ...)
     let l:fname = expand('%')
     let l:hash = expand('<cword>')
     if l:hash =~ '^[0-9a-f]\{7,40}$'
         if stridx(l:fname, ' -- ') != -1
             let l:fname = split(l:fname, ' -- ')[-1]
         endif
+        let l:args = a:1
+        if strlen(l:args)
+            " Add a space to the end
+            let l:args = l:args . " "
+        endif
         if a:commit_or_file != "file"
-            let l:bufname = 'git show ' . l:hash . ' -- ' . l:fname
+            let l:bufname = 'git show ' . l:args . l:hash . ' -- ' . l:fname
             if !s:ShowBufInNewTab(l:bufname)
                 " Have Show show all the affected files, so don't actually use  "--"
                 " exec 'tabnew | r! git show ' . l:hash . ' -- ' . shellescape(l:fname)
-                exec 'tabnew | r! git show ' . l:hash
+                exec 'tabnew | r! git show ' . l:args . l:hash
                 " We lie here (' -- ') to have a filename the other git commands can use.
                 exec 'silent :file ' . fnameescape(l:bufname)
             endif
             0d_
         else
             let l:currentView = winsaveview()
-            let l:bufname = 'git show ' . l:hash . ':' . l:fname
+            let l:bufname = 'git show ' . l:args . l:hash . ':' . l:fname
             if !s:ShowBufInNewTab(l:bufname)
-                exec 'tabnew | r! git show ' . l:hash . ':' . shellescape(l:fname)
+                exec 'tabnew | r! git show ' . l:args. l:hash . ':' . shellescape(l:fname)
                 exec 'silent :file ' . fnameescape(l:bufname)
             endif
             0d_
@@ -96,8 +106,8 @@ function! s:GitShow(commit_or_file)
         echo l:hash . ' is not a git hash.'
     endif
 endfunction
-command Show :call s:GitShow("commit")
-command ShowFile :call s:GitShow("file")
+command -nargs=* Show :call s:GitShow("commit", <q-args>)
+command -nargs=* ShowFile :call s:GitShow("file", <q-args>)
 
 function! s:GitDiff()
     let l:fname = expand('%:.')
@@ -115,7 +125,7 @@ function! s:GitDiff()
             setl buftype=nofile
             0d_
             exec 'silent :file ' . fnameescape(l:bufname)
-	endif
+        endif
 
         let l:bufname = 'git show ' . l:hash . ':' . l:fname
         if !s:ShowBufInNewSplit(l:bufname)
@@ -129,14 +139,14 @@ function! s:GitDiff()
         let l:fname_parts = split(l:fname, ':')
         let l:fname = l:fname_parts[-1]
         let l:hash = split(l:fname_parts[0], ' ')[-1]
-	" TODO: Below few lines are identical to above, so remove dupes.
+        " TODO: Below few lines are identical to above, so remove dupes.
         let l:bufname = 'git show ' . l:hash . '^:' . l:fname
         if !s:ShowBufInNewTab(l:bufname)
             exec ':tabnew | silent r! git show ' . l:hash . '^:$(git rev-parse --show-prefix)' . shellescape(l:fname)
             setl buftype=nofile
             0d_
             exec 'silent :file ' . fnameescape(l:bufname)
-	endif
+        endif
 
         let l:bufname = 'git show ' . l:hash . ':' . l:fname
         if !s:ShowBufInNewSplit(l:bufname)
@@ -180,7 +190,7 @@ function! s:GitLog(...)
     let l:args = a:1
     if strlen(l:args)
         " Add a space to the end
-	let l:args = l:args . " "
+        let l:args = l:args . " "
     endif
     let l:bufname = 'git log ' . l:args . '-- ' . l:fname
     if !s:ShowBufInNewTab(l:bufname)
