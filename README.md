@@ -82,8 +82,8 @@ And you can pass in additional Git arguments like `--all`.
 The reason Log defaults to one-line logs is because `:Show` and `:Diff` are so
 easy to use to dive in deeper to the individual commits.
 
-Handy arguments are `--all`, `--merges`, `--date-order`, `--first-parent`, and
-`--ancestry-path`.
+Handy arguments are `--all`, `--follow` (for renamed files), `--merges`,
+`--date-order`, `--first-parent`, and `--ancestry-path`.
 
 ### :Show and :ShowFile
 
